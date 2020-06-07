@@ -1,12 +1,41 @@
 #if !defined(CARRAYS_C)
 
-#define MAKE_ARRAY_START(data_name, _type) _type*  Start(data_name* arr) { return (arr->count > 0) ? &arr->data[0] : nullptr; }
-#define MAKE_ARRAY_END(data_name, _type)   _type*  End(data_name* )   { return nullptr; }
+/*
+  Use:
+     - Some data you want to use in arrays.
+
+     struct SomeData {
+        ....
+     };
+
+     MAKE_ARRAY(SomeDataArray, SomeData)
+
+
+     - Usage
+     SomeDataArray array;
+     ARRAY_INIT(array, 100)
+
+     ARRAY_PUSH(array, some_data)
+
+     SomeData* temp = ARRAY_POP(array) // It's pointer, just valid until you use the push again.
+
+   Notes:
+      - MAKE_ARRAY makes Start, End, Last, Next and Prev functions you can use to iterate the array.
+        - Start gets the fisrt element.
+        - End returns NULL, just there for some for macros that require the End call.
+        - Last you the last one c:
+        - Next gets you the next item in the array from the item passed or NULL if it's the last.
+        - Prev gets you the previous item in the array from the item passed or NULL if it's the first.
+     - We realocate the data if the array is full, but we do it by asking the size*2. This can not be what you want.
+ */
+
+#define MAKE_ARRAY_START(data_name, _type) _type*  Start(data_name* arr) { return (arr->count > 0) ? &arr->data[0] : NULL; }
+#define MAKE_ARRAY_END(data_name, _type)   _type*  End(data_name* )   { return NULL; }
 #define MAKE_ARRAY_LAST(data_name, _type)   _type* Last(data_name* arr)   { return (arr->count > 0) ? &arr->data[arr->count-1] : nullptr; }
 #define MAKE_ARRAY_NEXT(data_name, _type) _type*  Next(data_name* arr, _type* it) { \
-        return (&arr->data[arr->count-1] == it) ? nullptr : (it + 1); }
+        return (&arr->data[arr->count-1] == it) ? NULL: (it + 1); }
 #define MAKE_ARRAY_PREV(data_name, _type) _type*  Prev(data_name* arr, _type* it) { \
-        return (&arr->data[0] == it) ? nullptr : (it - 1); }
+        return (&arr->data[0] == it) ? NULL: (it - 1); }
 
 #define MAKE_ARRAY(data_name, type) struct data_name {       \
         size_t size;                                          \
